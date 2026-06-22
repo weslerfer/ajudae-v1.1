@@ -1,0 +1,6 @@
+{
+  "name": "Ajudae",
+  "description": "Sistema de Grupos de Ajuda Financeira com ativação via Pix e gerenciamento de carteira.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
