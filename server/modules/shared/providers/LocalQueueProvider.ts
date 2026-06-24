@@ -8,7 +8,7 @@ export class LocalQueueProvider implements IQueueProvider {
     const job: IJob<T> = { name, data };
     
     if (this.processors.has(queueName)) {
-      this.executeJob(queueName, job, options);
+      await this.executeJob(queueName, job, options);
     } else {
       if (!this.pendingJobs.has(queueName)) {
         this.pendingJobs.set(queueName, []);
@@ -28,17 +28,18 @@ export class LocalQueueProvider implements IQueueProvider {
     }
   }
 
-  private executeJob(queueName: string, job: IJob<any>, options?: IJobOptions) {
+  private async executeJob(queueName: string, job: IJob<any>, options?: IJobOptions) {
     const delay = options?.delay || 0;
-    setTimeout(async () => {
-      const processor = this.processors.get(queueName);
-      if (processor) {
-        try {
-          await processor(job);
-        } catch (error) {
-          console.error(`[LocalQueue] Error processing job ${job.name} in queue ${queueName}:`, error);
-        }
+    if (delay > 0) {
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+    const processor = this.processors.get(queueName);
+    if (processor) {
+      try {
+        await processor(job);
+      } catch (error) {
+        console.error(`[LocalQueue] Error processing job ${job.name} in queue ${queueName}:`, error);
       }
-    }, delay);
+    }
   }
 }

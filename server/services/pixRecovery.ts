@@ -9,7 +9,7 @@ export function startPixRecoveryCron() {
 }
 
 let isRecovering = false;
-async function recoverPendingPayments() {
+export async function recoverPendingPayments() {
   if (isRecovering) return;
   isRecovering = true;
   

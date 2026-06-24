@@ -155,29 +155,28 @@ const pendingPaymentLocks = new Set<string>();
 import { startPixRecoveryCron } from './server/services/pixRecovery';
 import { container } from './server/shared/container';
 
+app.use(authRouter);
+app.use(groupsRouter);
+app.use(paymentsRouter);
+app.use(webhooksRouter);
+app.use(adminRouter);
+app.use(walletRouter);
+app.use(notificationsRouter);
+app.use(configRouter);
+app.use(v1Router);
+
+// Global Error Handler
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  const errorMsg = 'Erro interno no servidor.';
+  console.error('[Global Error Handler]', err?.message || err);
+  if (!res.headersSent) {
+    res.status(500).json({ error: errorMsg });
+  }
+});
+
 async function startServer() {
   // Start Background Cron Jobs
   startPixRecoveryCron();
-  container.jobService.startWorkers();
-
-    app.use(authRouter);
-    app.use(groupsRouter);
-    app.use(paymentsRouter);
-    app.use(webhooksRouter);
-    app.use(adminRouter);
-    app.use(walletRouter);
-    app.use(notificationsRouter);
-    app.use(configRouter);
-    app.use(v1Router);
-
-    // Global Error Handler
-    app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-      const errorMsg = 'Erro interno no servidor.';
-      console.error('[Global Error Handler]', err?.message || err);
-      if (!res.headersSent) {
-        res.status(500).json({ error: errorMsg });
-      }
-    });
 
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
@@ -198,4 +197,11 @@ async function startServer() {
   });
 }
 
-startServer();
+if (!process.env.VERCEL) {
+  startServer();
+}
+
+// Ensure workers are registered even on Vercel
+container.jobService.startWorkers();
+
+export default app;
