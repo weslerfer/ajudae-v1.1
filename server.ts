@@ -10,7 +10,6 @@ import cookieParser from 'cookie-parser';
 import jwt from 'jsonwebtoken';
 import path from 'path';
 import { randomUUID, randomBytes } from 'crypto';
-import { createServer as createViteServer } from 'vite';
 import { 
   isSupabaseConfigured, 
   registerAuthUserInSupabase, 
@@ -179,6 +178,7 @@ async function startServer() {
   startPixRecoveryCron();
 
   if (process.env.NODE_ENV !== "production") {
+    const { createServer: createViteServer } = await import('vite');
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
