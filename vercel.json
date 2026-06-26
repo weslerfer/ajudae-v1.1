@@ -12,7 +12,7 @@
   "crons": [
     {
       "path": "/api/v1/admin/cron/pix-recovery",
-      "schedule": "*/10 * * * *"
+      "schedule": "0 0 * * *"
     }
   ]
 }
