@@ -60,7 +60,7 @@ export class AdminUseCase {
     return profiles.map(p => {
       const invites = allInvites.filter(i => i.inviter_user_id === p.id);
       const userWallets = allWallets.filter(w => w.user_id === p.id);
-      const userSaldo = userWallets.length > 0 ? Number(userWallets[0].balance || 0) : 0;
+      const userSaldo = userWallets.length > 0 ? Number(userWallets[0].saldo_atual || 0) : 0;
       
       const userActiveGroupsDetails = [];
       for (const g of activeGroups) {
@@ -244,7 +244,7 @@ export class AdminUseCase {
         user_id: user.id,
         nome_completo: user.nome_completo || 'Sem Nome',
         email: user.email || 'N/A',
-        saldo_atual: w ? Number(w.balance || 0) : 0
+        saldo_atual: w ? Number(w.saldo_atual || 0) : 0
       };
     });
 

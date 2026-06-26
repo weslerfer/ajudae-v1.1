@@ -4,22 +4,25 @@ export class WalletRepository {
   async getWallets(): Promise<any[]> {
     const client = getSupabaseClient();
     if (!client) return [];
-    const { data } = await client.from("wallets").select("*");
+    const { data } = await client.from("wallet").select("*");
     return data || [];
   }
 
   async getOrCreateWallet(userId: string): Promise<any> {
     const client = getSupabaseClient();
-    if (!client) return { user_id: userId, balance: 0, updated_at: new Date().toISOString() };
+    if (!client) return { user_id: userId, saldo_atual: 0, updated_at: new Date().toISOString() };
 
-    const { data, error } = await client.from("wallets").select("*").eq("user_id", userId).single();
+    const { data, error } = await client.from("wallet").select("*").eq("user_id", userId).single();
     if (error || !data) {
         const newWallet = { 
             user_id: userId, 
-            balance: 0, 
-            updated_at: new Date().toISOString()
+            saldo_atual: 0,
         };
-        await client.from("wallets").insert([newWallet]);
+        const { error: insertError } = await client.from("wallet").insert([newWallet]);
+        if (insertError) {
+             console.error("[Wallet] Insert Error:", insertError);
+             throw new Error("Erro ao criar carteira: " + insertError.message);
+        }
         return newWallet;
     }
     return data;
@@ -29,15 +32,19 @@ export class WalletRepository {
     const client = getSupabaseClient();
     if (!client) return;
     const wallet = await this.getOrCreateWallet(userId);
-    const newBalance = Number(wallet.balance) + amount;
+    const newBalance = Number(wallet.saldo_atual) + amount;
     
-    await client.from("wallets").update({ 
-        balance: newBalance, 
-        updated_at: new Date().toISOString() 
+    const { error: updateError } = await client.from("wallet").update({ 
+        saldo_atual: newBalance, 
     }).eq("user_id", userId);
+    
+    if (updateError) {
+        console.error("[Wallet] Update Error:", updateError);
+        throw new Error("Erro ao atualizar saldo: " + updateError.message);
+    }
 
     tx.balance_after = newBalance;
-    await client.from("wallet_transactions").insert([{
+    const { error: txError } = await client.from("wallet_transactions").insert([{
         id: tx.id,
         user_id: tx.user_id,
         tipo: tx.tipo,
@@ -49,6 +56,12 @@ export class WalletRepository {
         withdrawal_id: tx.withdrawal_id,
         created_at: tx.created_at || new Date().toISOString(),
     }]);
+    
+    if (txError) {
+        console.error("[Wallet] Transaction Insert Error:", txError);
+        // We log but don't strictly rollback wallets as Supabase JS doesn't support transactions easily without RPC, but we can throw to alert.
+        throw new Error("Erro ao registrar transação: " + txError.message);
+    }
   }
 
   async getTransactions(match?: Partial<any>): Promise<any[]> {
