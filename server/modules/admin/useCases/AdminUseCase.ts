@@ -60,7 +60,7 @@ export class AdminUseCase {
     return profiles.map(p => {
       const invites = allInvites.filter(i => i.inviter_user_id === p.id);
       const userWallets = allWallets.filter(w => w.user_id === p.id);
-      const userSaldo = userWallets.length > 0 ? userWallets[0].saldo_atual : 0;
+      const userSaldo = userWallets.length > 0 ? Number(userWallets[0].balance || 0) : 0;
       
       const userActiveGroupsDetails = [];
       for (const g of activeGroups) {
@@ -237,12 +237,14 @@ export class AdminUseCase {
     const transactions = (await this.walletRepository.getTransactions()).sort((a,b) => b.created_at.localeCompare(a.created_at));
     const allProfiles = await this.profileRepository.getProfiles();
 
-    const formattedWallets = wallets.map(w => {
-      const user = allProfiles.find(p => p.id === w.user_id);
+    const formattedWallets = allProfiles.map(user => {
+      const w = wallets.find(p => p.user_id === user.id);
       return {
-        ...w,
-        nome_completo: user?.nome_completo || 'Sem Nome',
-        email: user?.email || 'N/A'
+        id: w ? w.id : `virt_${user.id}`,
+        user_id: user.id,
+        nome_completo: user.nome_completo || 'Sem Nome',
+        email: user.email || 'N/A',
+        saldo_atual: w ? Number(w.balance || 0) : 0
       };
     });
 
