@@ -1,4 +1,3 @@
-// @ts-ignore
-const server = require('../dist/server.cjs');
+import server from '../dist/server.cjs';
 
 export default server.default || server;
