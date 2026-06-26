@@ -55,7 +55,7 @@ export class WalletRepository {
     const client = getSupabaseClient();
     if (!client) return [];
     let query = client.from("wallet_transactions")
-      .select("*, users_profile(nome_completo)")
+      .select("*, users_profile!user_id(nome_completo)")
       .order("created_at", { ascending: false });
     if (match) query = query.match(match);
     const { data } = await query;
@@ -177,5 +177,11 @@ export class WalletRepository {
     const client = getSupabaseClient();
     if (!client) return;
     await client.from("withdrawals").delete().eq("id", id);
+  }
+
+  async deleteTransaction(transactionId: string): Promise<void> {
+    const client = getSupabaseClient();
+    if (!client) return;
+    await client.from("wallet_transactions").delete().eq("id", transactionId);
   }
 }

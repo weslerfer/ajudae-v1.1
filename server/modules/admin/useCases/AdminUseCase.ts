@@ -140,6 +140,9 @@ export class AdminUseCase {
 
     if (action === 'excluido') {
       await this.walletRepository.updateWithdrawalStatus(id, 'excluido', undefined, undefined);
+      if (withdrawal.transaction_id) {
+        await this.walletRepository.deleteTransaction(withdrawal.transaction_id);
+      }
       return { message: 'Saque excluído e fundos estornados silenciosamente.' };
     }
 
