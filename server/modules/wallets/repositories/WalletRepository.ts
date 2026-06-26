@@ -31,35 +31,23 @@ export class WalletRepository {
   async adjustWalletBalance(userId: string, amount: number, tx: any): Promise<void> {
     const client = getSupabaseClient();
     if (!client) return;
-    const wallet = await this.getOrCreateWallet(userId);
-    const newBalance = Number(wallet.saldo_atual) + amount;
     
-    const { error: updateError } = await client.from("wallet").update({ 
-        saldo_atual: newBalance, 
-    }).eq("user_id", userId);
+    // Ensure the wallet exists before inserting a transaction, so the trigger finds the row to update
+    await this.getOrCreateWallet(userId);
     
-    if (updateError) {
-        console.error("[Wallet] Update Error:", updateError);
-        throw new Error("Erro ao atualizar saldo: " + updateError.message);
-    }
-
-    tx.balance_after = newBalance;
+    // Insert into wallet_transactions. The database trigger 'on_wallet_transaction_insert'
+    // will automatically update the 'saldo_atual' on the 'wallet' table securely.
     const { error: txError } = await client.from("wallet_transactions").insert([{
         id: tx.id,
         user_id: tx.user_id,
         tipo: tx.tipo,
         valor: Number(tx.valor),
         descricao: tx.descricao,
-        balance_after: Number(tx.balance_after),
-        group_id: tx.group_id,
-        payment_id: tx.payment_id,
-        withdrawal_id: tx.withdrawal_id,
         created_at: tx.created_at || new Date().toISOString(),
     }]);
     
     if (txError) {
         console.error("[Wallet] Transaction Insert Error:", txError);
-        // We log but don't strictly rollback wallets as Supabase JS doesn't support transactions easily without RPC, but we can throw to alert.
         throw new Error("Erro ao registrar transação: " + txError.message);
     }
   }
@@ -79,10 +67,6 @@ export class WalletRepository {
       tipo: t.tipo,
       valor: Number(t.valor),
       descricao: t.descricao,
-      balance_after: t.balance_after,
-      group_id: t.group_id,
-      payment_id: t.payment_id,
-      withdrawal_id: t.withdrawal_id,
       created_at: t.created_at,
     }));
   }
