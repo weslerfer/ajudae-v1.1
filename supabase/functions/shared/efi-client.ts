@@ -2,8 +2,8 @@ import { EfiConfig } from "./types.ts";
 
 export class EfiClient {
   private config: EfiConfig;
-  private accessToken: string | null = null;
-  private tokenExpiresAt: number = 0;
+  private static accessToken: string | null = null;
+  private static tokenExpiresAt: number = 0;
 
   constructor() {
     this.config = {
@@ -40,8 +40,8 @@ export class EfiClient {
   }
 
   private async authenticate() {
-    if (this.accessToken && Date.now() < this.tokenExpiresAt) {
-      return this.accessToken;
+    if (EfiClient.accessToken && Date.now() < EfiClient.tokenExpiresAt) {
+      return EfiClient.accessToken;
     }
 
     const authHeader = btoa(
@@ -65,10 +65,10 @@ export class EfiClient {
     }
 
     const data = await response.json();
-    this.accessToken = data.access_token;
+    EfiClient.accessToken = data.access_token;
     // Expire 1 minute before actual expiration to be safe
-    this.tokenExpiresAt = Date.now() + (data.expires_in - 60) * 1000;
-    return this.accessToken;
+    EfiClient.tokenExpiresAt = Date.now() + (data.expires_in - 60) * 1000;
+    return EfiClient.accessToken;
   }
 
   async configureWebhook(webhookUrl: string) {

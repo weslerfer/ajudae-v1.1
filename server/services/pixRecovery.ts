@@ -15,13 +15,20 @@ export async function recoverPendingPayments() {
   
   try {
     const payments = await container.paymentRepository.getPaymentsPix();
-    const pendings = payments.filter((p: any) => p.status === 'pendente');
+    const pendings = payments.filter((p: any) => 
+      p.status === 'pendente' || (p.status === 'pago' && !p.processed_at)
+    );
     if (pendings.length > 0) {
-      console.log(`[Pix Recovery] Found ${pendings.length} pending payments. Checking with Provider...`);
+      console.log(`[Pix Recovery] Found ${pendings.length} pending/unprocessed payments. Checking with Provider...`);
       let recovered = 0;
       for (const payment of pendings) {
         try {
-          const isPaid = await container.paymentProvider.checkPixStatus(payment.txid);
+          let isPaid = false;
+          if (payment.status === 'pago') {
+             isPaid = true;
+          } else {
+             isPaid = await container.paymentProvider.checkPixStatus(payment.txid);
+          }
           if (isPaid) {
             await container.queueService.enqueue('payment-queue', 'process-payment-success', { payment });
             recovered++;

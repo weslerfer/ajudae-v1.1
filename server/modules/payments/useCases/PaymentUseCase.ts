@@ -79,6 +79,11 @@ export class PaymentUseCase {
           const updatedPayment = await this.paymentRepository.getPaymentPixById(paymentId);
           if (updatedPayment) payment = updatedPayment;
         }
+      } else if (payment.status === 'pago' && !payment.processed_at) {
+        // O webhook já marcou como pago, mas o sistema ainda não ativou o grupo.
+        await this.processPaymentSuccess(payment);
+        const updatedPayment = await this.paymentRepository.getPaymentPixById(paymentId);
+        if (updatedPayment) payment = updatedPayment;
       }
       return { payment };
   }
@@ -114,8 +119,12 @@ export class PaymentUseCase {
   }
 
   async processPaymentSuccess(payment: PaymentPix): Promise<{ success: boolean; error?: string }> {
-    if (payment.status !== 'pendente') {
+    if (payment.processed_at) {
       return { success: false, error: 'Este pagamento já foi processado anteriormente.' };
+    }
+    
+    if (payment.status !== 'pendente' && payment.status !== 'pago') {
+      return { success: false, error: 'O status do pagamento não permite processamento.' };
     }
     
     if (this.paymentProcessingLocks.has(payment.id)) {
