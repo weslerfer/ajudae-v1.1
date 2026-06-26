@@ -1,3 +1,4 @@
-import app from '../server.js';
+// @ts-ignore
+const server = require('../dist/server.cjs');
 
-export default app;
+export default server.default || server;
