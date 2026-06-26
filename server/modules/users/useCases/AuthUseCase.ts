@@ -44,21 +44,35 @@ export class AuthUseCase {
     }
   }
 
-  async login(email: string, senha: string) {
-    if (!email || !senha) {
-      throw new Error('E-mail e senha são obrigatórios.');
+  async login(identifier: string, senha: string) {
+    if (!identifier || !senha) {
+      throw new Error('E-mail/CPF e senha são obrigatórios.');
     }
 
     if (!isSupabaseConfigured()) {
        throw new Error('Supabase não está configurado. O sistema apenas funciona com banco de dados em nuvem.');
     }
 
-    const result = await loginUserInSupabase({ email, senha_suporte_plain: senha });
+    let emailToLogin = identifier;
+
+    // Se o identificador não contiver '@', assumimos que é um CPF
+    if (!identifier.includes('@')) {
+      const cleanCpf = identifier.replace(/\D/g, '');
+      if (cleanCpf.length === 11) {
+        const userByCpf = await this.profileRepository.getProfileByCpf(cleanCpf);
+        if (!userByCpf) {
+          throw new Error('E-mail, CPF ou senha incorretos.');
+        }
+        emailToLogin = userByCpf.email;
+      }
+    }
+
+    const result = await loginUserInSupabase({ email: emailToLogin, senha_suporte_plain: senha });
     if (result) {
       const token = jwt.sign({ id: result.user.id }, JWT_SECRET, { expiresIn: '7d' });
       return { user: sanitizeUser(result.user), token };
     }
-    throw new Error('E-mail ou senha incorretos.');
+    throw new Error('E-mail, CPF ou senha incorretos.');
   }
 
   async getMeStats(userId: string) {

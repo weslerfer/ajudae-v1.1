@@ -37,6 +37,11 @@ export class ProfileRepository {
     return profiles[0];
   }
 
+  async getProfileByCpf(cpf: string): Promise<UserProfile | undefined> {
+    const profiles = await this.getProfiles({ cpf });
+    return profiles[0];
+  }
+
   async getProfileByEmail(email: string): Promise<UserProfile | undefined> {
     const client = getSupabaseClient();
     if (!client) return undefined;

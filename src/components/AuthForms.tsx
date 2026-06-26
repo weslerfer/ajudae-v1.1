@@ -34,14 +34,14 @@ export function AuthForms(props: AuthFormsProps) {
       <form onSubmit={props.handleLogin} className="space-y-4">
         <div className="space-y-1.5">
           <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400 font-mono">
-            E-mail do Participante
+            E-mail ou CPF
           </label>
           <div className="relative">
             <Mail className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
-              type="email"
+              type="text"
               required
-              placeholder="seu_email@provedor.com"
+              placeholder="email@provedor.com ou 12345678900"
               value={props.loginEmail}
               onChange={(e) => props.setLoginEmail(e.target.value)}
               className="w-full bg-slate-950 text-white rounded-xl pl-10 pr-4 py-3 border border-slate-805 text-xs focus:outline-none focus:border-emerald-500 transition-colors"
