@@ -309,6 +309,9 @@ export default function GruposDisponiveis({ user }: GruposDisponiveisProps) {
                     Pagamento Pix Gerado!
                   </h3>
                   <p className="text-xs text-slate-400">Escaneie o QR Code ou cole o Pix abaixo para concluir ativação.</p>
+                  <div className="inline-block bg-emerald-950/40 text-emerald-400 border border-emerald-500/20 rounded-xl px-4 py-2 mt-2 mb-2 font-bold text-sm">
+                    Valor: R$ {selectedGroup.valor_ativacao.toFixed(2)}
+                  </div>
                 </div>
 
                 {/* QR Code graphic */}
