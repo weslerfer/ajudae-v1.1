@@ -38,7 +38,6 @@ export class WalletRepository {
     // Insert into wallet_transactions. The database trigger 'on_wallet_transaction_insert'
     // will automatically update the 'saldo_atual' on the 'wallet' table securely.
     const { error: txError } = await client.from("wallet_transactions").insert([{
-        id: tx.id,
         user_id: tx.user_id,
         tipo: tx.tipo,
         valor: Number(tx.valor),
