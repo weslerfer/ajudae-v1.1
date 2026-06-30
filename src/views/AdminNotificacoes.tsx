@@ -7,7 +7,7 @@ import React, { useState, useEffect } from 'react';
 import { Mail, Plus, Edit2, Trash2, Calendar, LayoutTemplate, BellRing, RefreshCw } from 'lucide-react';
 import { api } from '../api';
 import { AdminMessage } from '../types';
-import { ActionModal } from '../components/ActionModal';
+import { ActionModal } from '../components/ui/ActionModal';
 
 export default function AdminNotificacoes() {
   const [messages, setMessages] = useState<AdminMessage[]>([]);

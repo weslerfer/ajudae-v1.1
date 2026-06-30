@@ -79,7 +79,7 @@ export class WalletRepository {
     if (!client) return [];
     let query = client
       .from("withdrawals")
-      .select("id, user_id, valor, status, transaction_id, created_at, processed_at, motivo_rejeicao, users_profile(nome_completo, chave_pix, banco_pix)")
+      .select("id, user_id, valor, status, transaction_id, created_at, processed_at, users_profile(nome_completo, chave_pix, banco_pix)")
       .order("created_at", { ascending: false });
     if (match) query = query.match(match);
     const { data } = await query;

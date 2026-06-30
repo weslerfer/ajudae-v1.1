@@ -14,5 +14,7 @@ router.get('/api/auth/me_stats', authenticate, authController.meStats);
 router.post('/api/auth/update_profile', authenticate, authController.updateProfile);
 router.post('/api/auth/update_pix', authenticate, authController.updatePix);
 router.post('/api/auth/update_password', authenticate, authController.updatePassword);
+router.post('/api/auth/request-password-reset', authController.requestPasswordReset);
+router.post('/api/auth/verify-password-reset', authController.verifyPasswordReset);
 
 export default router;

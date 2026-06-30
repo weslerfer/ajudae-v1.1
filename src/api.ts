@@ -62,9 +62,25 @@ export const api = {
   },
 
   async login(credentials: any) {
+    // If we wanted to test MFA, we could intercept here.
+    // For now, we just pass to the mock backend.
     return request('/api/auth/login', {
       method: 'POST',
       body: JSON.stringify(credentials)
+    });
+  },
+
+  async requestPasswordReset(email: string) {
+    return request('/api/auth/request-password-reset', {
+      method: 'POST',
+      body: JSON.stringify({ email })
+    });
+  },
+
+  async verifyPasswordReset(token: string, newPassword: string) {
+    return request('/api/auth/verify-password-reset', {
+      method: 'POST',
+      body: JSON.stringify({ token, newPassword })
     });
   },
 

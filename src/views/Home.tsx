@@ -60,8 +60,9 @@ export default function Home({ user, onNavigate }: HomeProps) {
           <h1 className="text-xl md:text-2xl font-bold text-white tracking-tight">
             Olá, {user.nome_completo}!
           </h1>
-          <p className="text-xs text-slate-400 max-w-lg leading-relaxed">
-            Bem-vindo ao <strong>Ajudae</strong>. Sua participação em grupos de ajuda mútua digital começa aqui. Participe de grupos, convide amigos e veja sua carteira girar.
+          <p className="text-xs text-slate-400 max-w-2xl leading-relaxed">
+            Bem-vindo ao Ajudaae. Participe de grupos de ajuda financeira digital, convide amigos e com apenas um grupo você poderá receber o valor base do grupo de até 11.110 pessoas direto na sua carteira digital.<br/><br/>
+            Isso só Ajudaae faz!
           </p>
         </div>
         <button 

@@ -119,7 +119,7 @@ export class PaymentUseCase {
   }
 
   async processPaymentSuccess(payment: PaymentPix): Promise<{ success: boolean; error?: string }> {
-    if (payment.processed_at) {
+    if ((payment as any).processed_at) {
       return { success: false, error: 'Este pagamento já foi processado anteriormente.' };
     }
     

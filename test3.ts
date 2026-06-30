@@ -1,0 +1,1 @@
+import { getSupabaseClient } from './server/supabase.ts'; async function test() { const client = getSupabaseClient(); const { data, error } = await client.from('wallet_transactions').select('*, users_profile!user_id(nome_completo)').match({user_id: '6c964c86-4e16-4852-92f4-0df93d7cac49'}); console.log('Error:', error); } test();  

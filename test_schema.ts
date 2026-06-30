@@ -1,0 +1,1 @@
+import { getSupabaseClient } from './server/supabase'; async function test() { const client = getSupabaseClient(); const { data, error } = await client.from('wallets').select('*').limit(1); console.log('Data:', data); console.log('Error:', error); } test();  

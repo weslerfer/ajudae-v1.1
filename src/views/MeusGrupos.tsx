@@ -11,13 +11,24 @@ import {
   Copy, 
   Check, 
   ArrowLeft, 
-  QrCode, 
   Link2,
-  Calendar,
-  Layers
 } from 'lucide-react';
 import { api } from '../api';
-import { UserProfile, ActiveGroup } from '../types';
+import { UserProfile } from '../types';
+import { Section } from '../components/ui/Section';
+import { Container } from '../components/ui/Container';
+import { Typography } from '../components/ui/Typography';
+import { Grid } from '../components/ui/Grid';
+import { Surface } from '../components/ui/Surface';
+import { GlassSurface } from '../components/ui/GlassSurface';
+import { Button } from '../components/ui/Button';
+import { EmptyState } from '../components/ui/EmptyState';
+import { Skeleton } from '../components/ui/Skeleton';
+import { Icon } from '../components/ui/Icon';
+import { motion, AnimatePresence } from 'motion/react';
+import { fadeUp, staggerChildren } from '../experience/presets/presets';
+import { useFeedback } from '../providers/FeedbackProvider';
+import { useToast } from '../components/ui/useToast';
 
 interface MeusGruposProps {
   user: UserProfile;
@@ -29,16 +40,21 @@ export default function MeusGrupos({ user }: MeusGruposProps) {
   const [inviteCode, setInviteCode] = useState('');
   const [inviteStats, setInviteStats] = useState({ used_count: 0, max_uses: 10 });
   const [copied, setCopied] = useState(false);
-  const [shared, setShared] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  const { executeAction } = useFeedback();
+  const { toast } = useToast();
 
   const loadGroups = async () => {
     try {
       setLoading(true);
+      setError(false);
       const res = await api.getActiveGroups();
       setActiveGroups(res.groups || []);
     } catch (err) {
       console.error(err);
+      setError(true);
     } finally {
       setLoading(false);
     }
@@ -49,7 +65,7 @@ export default function MeusGrupos({ user }: MeusGruposProps) {
   }, [user.id]);
 
   const handleSelectGroup = async (group: any) => {
-    try {
+    await executeAction(async () => {
       const details = await api.getGroupDetails(group.id);
       setSelectedGroup(details.group);
       setInviteCode(details.invite_code || '');
@@ -57,9 +73,7 @@ export default function MeusGrupos({ user }: MeusGruposProps) {
         used_count: details.used_count || 0,
         max_uses: details.max_uses || 10
       });
-    } catch (err) {
-      console.error('Error fetching group details:', err);
-    }
+    }, undefined, 'Falha ao carregar os detalhes do grupo.');
   };
 
   const inviteUrl = `${window.location.origin}/?invite=${inviteCode}`;
@@ -68,271 +82,310 @@ export default function MeusGrupos({ user }: MeusGruposProps) {
     navigator.clipboard.writeText(inviteUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+    toast({ title: 'Copiado', description: 'Link de convite copiado para a área de transferência', variant: 'success' });
   };
 
   const handleShare = () => {
-    const textMsg = `Olá! Quero te convidar para o grupo "${selectedGroup?.nome_grupo}" na plataforma Ajudae! Ative utilizando este link de convite oficial: ${inviteUrl}`;
+    const textMsg = `Olá! Quero te convidar para o grupo "${selectedGroup?.nome_grupo}" na plataforma Ajudae! Ative utilizando este link oficial: ${inviteUrl}`;
     
     if (navigator.share) {
       navigator.share({
         title: 'Convite Ajudae',
         text: textMsg,
         url: inviteUrl,
-      }).then(() => {
-        setShared(true);
-        setTimeout(() => setShared(false), 2500);
       }).catch(err => {
         console.error(err);
       });
     } else {
-      // Fallback: Copy and notify user
       navigator.clipboard.writeText(textMsg);
-      setShared(true);
-      setTimeout(() => setShared(false), 2500);
+      toast({ title: 'Pronto', description: 'Mensagem pronta para compartilhar copiada!', variant: 'success' });
     }
   };
 
   if (selectedGroup) {
     return (
-      <div className="max-w-3xl mx-auto space-y-6 animate-fade-in pb-12">
-        {/* Back navigation header button */}
-        <button
-          onClick={() => setSelectedGroup(null)}
-          className="flex items-center gap-2 text-xs text-slate-400 hover:text-white transition-colors py-2 px-3 bg-slate-900 border border-slate-800 rounded-xl cursor-pointer"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Voltar para Meus Grupos</span>
-        </button>
+      <Section className="pt-8">
+        <Container>
+          <motion.div variants={staggerChildren} initial="hidden" animate="visible" className="space-y-8">
+            <motion.div variants={fadeUp}>
+              <Button 
+                variant="ghost" 
+                onClick={() => setSelectedGroup(null)}
+                className="text-slate-400 hover:text-white"
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Voltar para Meus Grupos
+              </Button>
+            </motion.div>
 
-        {/* Selected Group details card */}
-        <div className="bg-slate-900 border border-slate-900 rounded-3xl p-6.5 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-550/5 rounded-full blur-2xl" />
-          
-          <div className="space-y-4">
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-4">
-              <div className="space-y-1">
-                <span className="text-[10px] font-mono text-slate-500 uppercase">GRUPO ATIVADO</span>
-                <h2 className="text-xl font-bold text-white">{selectedGroup.nome_grupo}</h2>
-              </div>
-              <div className="flex items-center gap-2 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-3 py-1.5 rounded-xl font-mono text-xs font-bold uppercase">
-                <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
-                Ativado
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-slate-950 p-4 rounded-xl border border-slate-900">
-                <p className="text-[10px] text-slate-500 uppercase font-mono">ID Único do Grupo</p>
-                <p className="text-xs font-mono text-white mt-1 break-all">{selectedGroup.id}</p>
-              </div>
-              <div className="bg-slate-950 p-4 rounded-xl border border-slate-900 flex justify-between items-center">
-                <div>
-                  <p className="text-[10px] text-slate-500 uppercase font-mono">Valor de Ativação</p>
-                  <p className="text-base font-extrabold text-white mt-1">R$ {selectedGroup.valor_ativacao.toFixed(2)}</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-[10px] text-slate-500 uppercase font-mono">Valor Base</p>
-                  <p className="text-sm font-semibold text-slate-300 mt-1">R$ {selectedGroup.valor_base.toFixed(2)}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Participating active members sequence queue (1º ao 4º) */}
-        <div className="space-y-4">
-          <h3 className="text-sm font-semibold text-white flex items-center gap-1.5">
-            <Users className="w-4 h-4 text-emerald-400" />
-            Participantes Ativos do Grupo
-          </h3>
-          
-          <div className="flex flex-col gap-3">
-            {selectedGroup.members && selectedGroup.members.length > 0 ? (
-              selectedGroup.members.map((member: any, index: number) => {
-                const isCurrentUser = member.user_id === user.id && member.nome_completo === user.nome_completo;
+            {/* Header Surface */}
+            <motion.div variants={fadeUp}>
+              <GlassSurface intensity="premium" className="p-8 border-emerald-500/20 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-[80px] pointer-events-none" />
                 
-                return (
-                  <div 
-                    key={member.id} 
-                    className={`p-4 rounded-xl border flex items-center justify-between relative overflow-hidden ${
-                      isCurrentUser 
-                        ? 'bg-emerald-600/5 border-emerald-500/30' 
-                        : 'bg-slate-900 border-slate-900'
-                    }`}
-                  >
-                    <div className="flex items-center gap-4 w-full">
-                      <div className="w-10 h-10 rounded-lg bg-slate-950 flex flex-shrink-0 items-center justify-center font-black text-slate-500 border border-slate-800">
-                        #{member.position}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="text-sm font-bold text-white flex items-center gap-2 truncate">
-                          <span className="truncate">{member.nome_completo}</span>
-                          {isCurrentUser && (
-                            <span className="bg-emerald-500/10 text-emerald-400 text-[10px] px-1.5 py-0.5 rounded uppercase font-extrabold flex-shrink-0 border border-emerald-500/20">
-                              Você
-                            </span>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-1 text-slate-400 text-xs mt-1">
-                          <MapPin className="w-3.5 h-3.5 flex-shrink-0 text-slate-500" />
-                          <span className="truncate">{member.cidade} - {member.estado}</span>
-                        </div>
-                      </div>
+                <div className="flex flex-col gap-6 relative z-10">
+                  <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-6">
+                    <div>
+                      <Typography variant="caption" className="text-emerald-400 font-bold uppercase tracking-wider mb-2 font-mono">
+                        Grupo Ativado
+                      </Typography>
+                      <Typography variant="h2">{selectedGroup.nome_grupo}</Typography>
+                    </div>
+                    <div className="flex items-center gap-2 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-4 py-2 rounded-xl font-mono text-xs font-bold uppercase">
+                      <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse shadow-[0_0_10px_rgba(16,185,129,1)]" />
+                      Status Ativo
                     </div>
                   </div>
-                );
-              })
-            ) : (
-              <div className="text-center p-6 text-sm text-slate-500 font-mono">
-                Sem participantes atribuídos.
+
+                  <Grid cols={2} gap="lg">
+                    <GlassSurface className="p-5 flex-1">
+                      <Typography variant="caption" color="secondary" className="uppercase font-bold tracking-wider text-[10px] mb-1 block">Valor Base</Typography>
+                      <Typography variant="h3" className="text-emerald-400 font-mono">
+                        R$ {Number(selectedGroup.valor_base).toFixed(2)}
+                      </Typography>
+                    </GlassSurface>
+                    <GlassSurface className="p-5 flex-1 flex items-center">
+                      <div>
+                        <Typography variant="caption" color="secondary" className="uppercase font-mono mb-1">Ativação</Typography>
+                        <Typography variant="h3" className="text-emerald-400">R$ {selectedGroup.valor_ativacao.toFixed(2)}</Typography>
+                      </div>
+                    </GlassSurface>
+                  </Grid>
+                </div>
+              </GlassSurface>
+            </motion.div>
+
+            {/* Participantes */}
+            <motion.div variants={fadeUp} className="space-y-4">
+              <div className="flex items-center gap-2 mb-2">
+                <Users className="w-5 h-5 text-emerald-400" />
+                <Typography variant="h4">Participantes Ativos</Typography>
               </div>
+              
+              <div className="flex flex-col gap-3">
+                {selectedGroup.members && selectedGroup.members.length > 0 ? (
+                  selectedGroup.members.map((member: any) => {
+                    const isCurrentUser = member.user_id === user.id && member.nome_completo === user.nome_completo;
+                    
+                    return (
+                      <GlassSurface 
+                        key={member.id} 
+                        className={`p-4 flex items-center justify-between transition-all ${
+                          isCurrentUser ? 'border-emerald-500/30 bg-emerald-500/5 shadow-[0_0_15px_rgba(16,185,129,0.1)]' : ''
+                        }`}
+                      >
+                        <div className="flex items-center gap-5">
+                          <div className="w-12 h-12 rounded-xl bg-slate-900 border border-white/5 flex items-center justify-center font-black text-slate-500 text-lg">
+                            #{member.position}
+                          </div>
+                          <div>
+                            <div className="flex items-center gap-3 mb-1">
+                              <Typography variant="body" className="font-bold">{member.nome_completo}</Typography>
+                              {isCurrentUser && (
+                                <span className="bg-emerald-500/20 text-emerald-400 text-[10px] px-2 py-0.5 rounded-full uppercase font-bold border border-emerald-500/30">
+                                  Você
+                                </span>
+                              )}
+                            </div>
+                            <div className="flex items-center gap-1.5 text-slate-400 text-xs">
+                              <MapPin className="w-3.5 h-3.5" />
+                              <span>{member.cidade} - {member.estado}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </GlassSurface>
+                    );
+                  })
+                ) : (
+                  <GlassSurface className="p-8 text-center border-dashed">
+                    <Typography variant="body" color="secondary" className="font-mono">
+                      Sem participantes atribuídos ainda.
+                    </Typography>
+                  </GlassSurface>
+                )}
+              </div>
+            </motion.div>
+
+            {/* Share Hub */}
+            {inviteCode && (
+              <motion.div variants={fadeUp}>
+                <GlassSurface className="p-8 border-indigo-500/20 bg-indigo-500/5">
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-white/10 pb-6 mb-6">
+                    <div>
+                      <div className="flex items-center gap-2 mb-2">
+                        <Link2 className="w-5 h-5 text-emerald-400" />
+                        <Typography variant="h4">Compartilhe seu Convite</Typography>
+                      </div>
+                      <Typography variant="caption" color="secondary">
+                        Conclua novas ativações para elevar de posição.
+                      </Typography>
+                    </div>
+
+                    <div className="text-left sm:text-right">
+                      <Typography variant="caption" color="secondary" className="font-mono mb-1">Fichas disponíveis</Typography>
+                      <Typography variant="h3" className="text-emerald-400 font-mono">
+                        {inviteStats.max_uses - inviteStats.used_count} <span className="text-sm text-slate-500">/ {inviteStats.max_uses}</span>
+                      </Typography>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3 mb-6">
+                    <Typography variant="caption" className="font-mono uppercase font-bold text-slate-400">
+                      Link Único do Grupo
+                    </Typography>
+                    <div className="flex gap-3">
+                      <input
+                        type="text"
+                        readOnly
+                        value={inviteUrl}
+                        className="flex-1 bg-slate-950 font-mono text-sm text-slate-300 rounded-xl px-5 py-4 border border-white/10 focus:outline-none focus:border-emerald-500/50 transition-colors selection:bg-emerald-500/30"
+                      />
+                      <Button 
+                        variant="secondary"
+                        onClick={handleCopyLink}
+                        className="px-6 h-[58px]"
+                        title="Copiar Link"
+                      >
+                        {copied ? <Check className="w-5 h-5 text-emerald-400" /> : <Copy className="w-5 h-5" />}
+                      </Button>
+                    </div>
+                  </div>
+
+                  <Button 
+                    variant="primary" 
+                    className="w-full h-14"
+                    onClick={handleShare}
+                  >
+                    <Share2 className="w-5 h-5 mr-2" />
+                    Compartilhar Convite Oficial
+                  </Button>
+                </GlassSurface>
+              </motion.div>
             )}
-          </div>
-        </div>
-
-        {/* CUSTOM SHARE & INVITES INTEGRATED HUB */}
-        {inviteCode && (
-          <div className="bg-slate-900 border border-slate-900 rounded-3xl p-6 md:p-8 space-y-6">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-800 pb-5">
-              <div>
-                <h3 className="text-sm font-bold text-white flex items-center gap-1.5">
-                  <Link2 className="w-4 h-4 text-emerald-400" />
-                  Compartilhe seu Link de Convite
-                </h3>
-                <p className="text-xs text-slate-400 mt-1">Conclua novas ativações para elevar de posição no grupo!</p>
-              </div>
-
-              <div className="text-right">
-                <span className="text-xs font-mono text-slate-400">Fichas disponíveis:</span>
-                <p className="text-lg font-black text-emerald-400 mt-0.5 font-mono">
-                  {inviteStats.max_uses - inviteStats.used_count} / {inviteStats.max_uses} restam
-                </p>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-[10px] font-bold uppercase tracking-wider text-slate-400 font-mono block">
-                Link Único do seu Grupo
-              </label>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  readOnly
-                  value={inviteUrl}
-                  className="w-full bg-slate-950 font-mono text-xs text-slate-400 rounded-xl px-4 py-3 border border-slate-800 select-all"
-                />
-                
-                <button
-                  onClick={handleCopyLink}
-                  className="bg-slate-800 hover:bg-slate-705 p-3 text-white rounded-xl flex items-center gap-1 bg-slate-800 hover:bg-slate-750 transition-colors border border-slate-800 cursor-pointer text-xs font-semibold"
-                  title="Copiar Link"
-                >
-                  {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-                </button>
-              </div>
-            </div>
-
-            <div className="flex gap-3 pt-2">
-              <button
-                onClick={handleShare}
-                className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 px-4 rounded-xl text-xs transition-colors shadow-lg cursor-pointer flex items-center justify-center gap-2"
-              >
-                <Share2 className="w-4 h-4" />
-                <span>{shared ? 'Mensagem Copiada & Pronto para Compartilhar!' : 'Compartilhar Convite'}</span>
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
+          </motion.div>
+        </Container>
+      </Section>
     );
   }
 
   return (
-    <div className="space-y-6 animate-fade-in pb-12">
-      <div className="border-b border-slate-900 pb-3 flex justify-between items-center">
-        <div>
-          <h1 className="text-xl font-bold text-white">Meus Grupos Ativos</h1>
-          <p className="text-xs text-slate-400 mt-1">Veja os grupos que você ativou e as posições de faturamento.</p>
-        </div>
-        <div className="text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/10 rounded-xl py-1.5 px-3 font-semibold font-mono">
-          {activeGroups.length} Ativos
-        </div>
-      </div>
-
-      {loading ? (
-        <div className="text-center py-12 text-xs text-slate-400">
-          Pesquisando seus grupos ativos...
-        </div>
-      ) : activeGroups.length === 0 ? (
-        <div className="bg-slate-900/40 border border-slate-800 p-12 rounded-3xl text-center space-y-4 max-w-lg mx-auto mt-6">
-          <div className="mx-auto w-12 h-12 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-500 mb-2">
-            <Users className="w-6 h-6 animate-pulse" />
+    <Section className="pt-8 pb-24">
+      <Container>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-white/10 pb-8 mb-8">
+          <div>
+            <Typography variant="h2" className="mb-2">Meus Grupos</Typography>
+            <Typography variant="body" color="secondary">Gerencie suas ativações e posições financeiras.</Typography>
           </div>
-          <h3 className="font-bold text-white text-base">Você não possui grupos ativos</h3>
-          <p className="text-xs text-slate-400 leading-relaxed max-w-sm mx-auto">
-            Para ativar seu primeiro grupo de ajuda financeira, escolha um nas listas de <strong>Grupos Disponíveis</strong> ou entre por meio de links de convite de terceiros!
-          </p>
+          <div className="hidden sm:flex items-center gap-2 bg-slate-900 border border-white/5 px-4 py-2 rounded-xl font-mono text-sm">
+            <span className="text-emerald-400 font-bold">{activeGroups.length}</span>
+            <span className="text-slate-400">Ativos</span>
+          </div>
         </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {activeGroups.map((group) => {
-            return (
-              <div 
-                key={group.id} 
-                className="bg-slate-900 border border-slate-900 hover:border-slate-800/80 transition-all rounded-3xl p-5.5 space-y-4 flex flex-col justify-between"
-              >
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[9px] font-mono text-slate-500">ID: {group.id.substring(0,8)}...</span>
-                    <span className="px-2 py-0.5 rounded-full text-[9px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/10 font-bold flex items-center gap-1.5 uppercase font-mono">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                      Ativado
-                    </span>
-                  </div>
 
-                  <h3 className="font-bold text-white text-base leading-tight">{group.nome_grupo}</h3>
-                  
-                  <div className="bg-slate-950 p-3 rounded-xl border border-slate-900 space-y-2">
-                    <div className="flex justify-between items-center text-[11px] pb-2 border-b border-slate-800/50">
-                      <span className="text-slate-500 font-mono">Valor Base:</span>
-                      <span className="font-bold text-emerald-400 text-xs">R$ {group.valor_base.toFixed(2)}</span>
-                    </div>
-                    <div className="space-y-1.5 pt-1">
-                      {[1, 2, 3, 4].map(pos => {
-                        const m = group.members?.find((x: any) => x.position === pos);
-                        const isMe = m?.user_id === user.id && m?.nome_completo === user.nome_completo;
-                        return (
-                          <div key={pos} className="flex items-center gap-2 text-[10px]">
-                            <span className="text-slate-500 font-mono w-4">#{pos}</span>
-                            <span className="font-medium truncate">
-                              {m ? (
-                                isMe ? (
-                                  <span className="text-emerald-400 font-bold">{m.nome_completo}</span>
-                                ) : (
-                                  <span className="text-slate-300">{m.nome_completo}</span>
-                                )
-                              ) : (
-                                <span className="text-slate-600 italic">Livre</span>
-                              )}
-                            </span>
+        <AnimatePresence mode="wait">
+          {loading ? (
+            <motion.div key="loading" variants={staggerChildren} initial="hidden" animate="visible">
+              <Grid cols={3} gap="lg">
+                {[1, 2, 3].map((i) => (
+                  <motion.div key={i} variants={fadeUp}>
+                    <Skeleton className="h-[280px] rounded-3xl" />
+                  </motion.div>
+                ))}
+              </Grid>
+            </motion.div>
+          ) : error ? (
+            <motion.div key="error" variants={fadeUp} initial="hidden" animate="visible">
+              <EmptyState 
+                icon="solar:danger-triangle-bold-duotone"
+                title="Erro de Conexão"
+                description="Não foi possível carregar seus grupos no momento. Tente novamente."
+                actionLabel="Tentar Novamente"
+                onAction={loadGroups}
+              />
+            </motion.div>
+          ) : activeGroups.length === 0 ? (
+            <motion.div key="empty" variants={fadeUp} initial="hidden" animate="visible">
+              <EmptyState 
+                icon="solar:users-group-two-rounded-bold-duotone"
+                title="Nenhum Grupo Ativo"
+                description="Você ainda não ativou nenhum grupo. Escolha um na lista de disponíveis para começar!"
+              />
+            </motion.div>
+          ) : (
+            <motion.div key="content" variants={staggerChildren} initial="hidden" animate="visible">
+              <Grid cols={3} gap="lg">
+                {activeGroups.map((group) => (
+                  <motion.div key={group.id} variants={fadeUp}>
+                    <GlassSurface 
+                      key={group.id} 
+                      className="group relative overflow-hidden transition-all duration-300 hover:border-emerald-500/20 h-full flex flex-col p-0"
+                    >
+                      <div className="p-6 flex-1 flex flex-col cursor-pointer" onClick={() => handleSelectGroup(group)}>
+                        <div className="flex items-center justify-between mb-3 pr-10">
+                          <Typography variant="caption" className="font-mono text-slate-500">
+                            ID: {group.id.substring(0,8).toUpperCase()}
+                          </Typography>
+                          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-bold uppercase tracking-wider font-mono absolute top-4 right-4 z-10">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,1)]" />
+                            Ativo
                           </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
+                        </div>
 
-                <button 
-                  onClick={() => handleSelectGroup(group)}
-                  className="w-full py-2.5 bg-emerald-600/10 hover:bg-emerald-600 border border-emerald-500/20 hover:border-emerald-500 text-emerald-400 hover:text-white rounded-xl text-xs font-bold transition-all cursor-pointer block text-center"
-                >
-                  Ver Grupo
-                </button>
-              </div>
-            );
-          })}
-        </div>
-      )}
-    </div>
+                        <Typography variant="h3" className="mb-4 line-clamp-2 leading-tight group-hover:text-emerald-400 transition-colors">
+                          {group.nome_grupo}
+                        </Typography>
+                        
+                        <div className="mt-auto bg-slate-950/50 p-4 rounded-2xl border border-white/5 space-y-4 mb-6">
+                          <div className="flex justify-between items-end pb-3 border-b border-white/5">
+                            <div>
+                              <Typography variant="caption" color="secondary" className="uppercase font-mono mb-1 block">Valor Base</Typography>
+                              <Typography variant="h3" className="text-emerald-400 font-mono">R$ {group.valor_base.toFixed(2)}</Typography>
+                            </div>
+                          </div>
+                          
+                          <div className="space-y-3 pt-1">
+                            {[1, 2, 3, 4].map(pos => {
+                              const m = group.members?.find((x: any) => x.position === pos);
+                              const isMe = m?.user_id === user.id && m?.nome_completo === user.nome_completo;
+                              return (
+                                <div key={pos} className="flex items-center gap-3">
+                                  <div className={`w-5 h-5 flex items-center justify-center rounded-md font-mono text-[10px] font-bold ${isMe ? 'bg-emerald-500 text-slate-950' : 'bg-slate-900 text-slate-500 border border-white/5'}`}>
+                                    {pos}
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    {m ? (
+                                      <Typography variant="caption" className={`truncate font-medium block ${isMe ? 'text-emerald-400 font-bold' : 'text-slate-300'}`}>
+                                        {m.nome_completo}
+                                      </Typography>
+                                    ) : (
+                                      <Typography variant="caption" className="text-slate-600 italic block">Posição Livre</Typography>
+                                    )}
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+
+                        <div className="mt-auto">
+                          <Button 
+                            variant="primary" 
+                            className="w-full"
+                            onClick={(e) => { e.stopPropagation(); handleSelectGroup(group); }}
+                          >
+                            Ver Grupo
+                            <ArrowLeft className="w-4 h-4 rotate-180 ml-2" />
+                          </Button>
+                        </div>
+                      </div>
+                    </GlassSurface>
+                  </motion.div>
+                ))}
+              </Grid>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </Container>
+    </Section>
   );
 }
