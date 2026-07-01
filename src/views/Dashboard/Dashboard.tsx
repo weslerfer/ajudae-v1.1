@@ -42,9 +42,9 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
 
 
   return (
-    <div className="min-h-screen bg-background text-text-primary pb-24 overflow-x-hidden">
+    <div className="min-h-[100dvh] md:min-h-screen bg-background text-text-primary pb-24 overflow-x-hidden">
       {/* Background Atmosphere */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
+      <div className="hidden lg:block fixed inset-0 z-0 pointer-events-none">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[80vw] h-[50vh] bg-emerald-500/5 blur-[120px] rounded-full mix-blend-screen" />
         <div className="absolute top-0 right-0 w-[40vw] h-[40vh] bg-neon-cyan/5 blur-[120px] rounded-full mix-blend-screen" />
       </div>

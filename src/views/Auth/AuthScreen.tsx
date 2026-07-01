@@ -192,7 +192,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onAuthSuccess, inviteCod
 
 
   return (
-    <div className="min-h-screen bg-slate-950 flex">
+    <div className="min-h-[100dvh] md:min-h-screen bg-slate-950 flex">
       {/* Left Column (Brand/Info) */}
       <div className="hidden lg:flex flex-1 flex-col justify-between p-12 relative overflow-hidden bg-slate-900 border-r border-slate-800/50">
         <div className="absolute top-0 left-0 w-full h-[500px] bg-emerald-500/10 blur-[120px] rounded-full mix-blend-screen pointer-events-none transform -translate-x-1/2 -translate-y-1/2"></div>

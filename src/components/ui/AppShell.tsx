@@ -57,7 +57,7 @@ export const AppShell: React.FC<AppShellProps> = ({
   };
 
   return (
-    <div className="flex h-screen w-full bg-slate-950 overflow-hidden text-slate-200 font-sans">
+    <div className="flex h-[100dvh] md:h-screen w-full bg-slate-950 overflow-hidden text-slate-200 font-sans">
       <GlobalProgressBar />
       <CommandPalette />
       
@@ -98,7 +98,7 @@ export const AppShell: React.FC<AppShellProps> = ({
         
         <main className="flex-1 overflow-x-hidden overflow-y-auto bg-[url('/noise.png')] bg-repeat relative custom-scrollbar">
           {/* Subtle global gradient background */}
-          <div className="fixed top-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-emerald-500/5 blur-[150px] pointer-events-none mix-blend-screen" />
+          <div className="hidden lg:block fixed top-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-emerald-500/5 blur-[150px] pointer-events-none mix-blend-screen" />
           
           <div className="max-w-7xl mx-auto px-4 md:px-8 pb-[max(1rem,env(safe-area-inset-bottom))] md:pb-8 pt-2 min-h-full">
             {children}

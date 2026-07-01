@@ -29,7 +29,7 @@ export class ErrorBoundary extends Component<Props, State> {
   public render() {
     if (this.state.hasError) {
       return (
-        <Section className="h-full min-h-screen flex items-center justify-center pt-24 pb-24 bg-slate-950">
+        <Section className="h-full min-h-[100dvh] md:min-h-screen flex items-center justify-center pt-24 pb-24 bg-slate-950">
           <Container>
             <EmptyState 
               icon="solar:shield-warning-bold-duotone"

@@ -118,7 +118,7 @@ export default function App() {
   // --- INITIAL LOADING SCREEN ---
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-6 text-slate-400 font-mono text-sm">
+      <div className="min-h-[100dvh] md:min-h-screen bg-slate-950 flex flex-col items-center justify-center p-6 text-slate-400 font-mono text-sm">
         <div className="w-8 h-8 rounded-full border-2 border-emerald-500/20 border-t-emerald-500 animate-spin mb-4" />
         Carregando ambiente seguro...
       </div>

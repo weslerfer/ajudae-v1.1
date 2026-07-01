@@ -31,6 +31,11 @@ body {
   width: 4px;
   height: 4px;
 }
+
+/* Fix iOS 300ms click delay and ensure snappy responses */
+a, button, input, select, textarea, [role="button"] {
+  touch-action: manipulation;
+}
 ::-webkit-scrollbar-track {
   background: var(--color-background);
 }
