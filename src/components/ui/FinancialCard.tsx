@@ -55,7 +55,7 @@ export const FinancialCard: React.FC<FinancialCardProps> = ({
                 exit={{ opacity: 0 }}
                 className="absolute inset-0 flex flex-col justify-end"
               >
-                 <div className="h-10 w-3/4 rounded bg-slate-800/50 animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/5 to-transparent bg-[length:200%_100%]" />
+                 <div className="h-10 w-3/4 rounded bg-slate-800/50 motion-safe:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/5 to-transparent bg-[length:200%_100%]" />
               </motion.div>
             ) : (
               <motion.div

@@ -14,7 +14,6 @@ export const Skeleton: React.FC<SkeletonProps> = ({
     <div
       className={cn(
         'relative overflow-hidden rounded-xl bg-slate-800/50',
-        active && 'animate-pulse',
         className
       )}
       {...props}
@@ -24,7 +23,7 @@ export const Skeleton: React.FC<SkeletonProps> = ({
         gradient over it to simulate data processing and provide a premium OS feel.
       */}
       {active && (
-        <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/5 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 -translate-x-full motion-safe:animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/5 to-transparent pointer-events-none" />
       )}
     </div>
   );

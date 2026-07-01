@@ -18,11 +18,11 @@ export const GlassSurface: React.FC<GlassSurfaceProps> = ({
   children,
   ...props
 }) => {
-  const intensityStyles = {
-    subtle: 'bg-white/5 backdrop-blur-sm border border-transparent',
-    base: 'bg-white/5 backdrop-blur-md border border-white/10 shadow-xl',
-    premium: 'bg-gradient-to-br from-white/10 to-transparent backdrop-blur-xl border border-white/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.3),0_20px_40px_rgba(0,0,0,0.4)]',
-  };
+    const intensityStyles = {
+      subtle: 'bg-white/5 backdrop-blur-none md:backdrop-blur-sm border border-transparent',
+      base: 'bg-white/5 backdrop-blur-sm lg:backdrop-blur-md border border-white/10 shadow-lg lg:shadow-xl',
+      premium: 'bg-slate-900/40 lg:bg-gradient-to-br from-white/10 to-transparent backdrop-blur-md lg:backdrop-blur-xl border border-white/20 shadow-xl lg:shadow-[inset_0_1px_1px_rgba(255,255,255,0.3),0_20px_40px_rgba(0,0,0,0.4)]',
+    };
 
   const radiusStyles = {
     none: 'rounded-none',

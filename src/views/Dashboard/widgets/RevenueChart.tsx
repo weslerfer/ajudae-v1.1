@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { GlassSurface } from '../../../components/ui/GlassSurface';
 import { Typography } from '../../../components/ui/Typography';
 
 type Timeframe = 'Dia' | 'Semana' | 'Mês';
 
-export const RevenueChart: React.FC<{ revenueHistory?: any }> = ({ revenueHistory }) => {
+export const RevenueChart = React.memo<{ revenueHistory?: any }>(({ revenueHistory }) => {
   const [mounted, setMounted] = useState(false);
   const [period, setPeriod] = useState<Timeframe>('Dia');
 
@@ -15,15 +15,13 @@ export const RevenueChart: React.FC<{ revenueHistory?: any }> = ({ revenueHistor
     return () => clearTimeout(timer);
   }, []);
 
-  const getChartData = () => {
+  const chartData = useMemo(() => {
     if (!revenueHistory) return [];
     if (period === 'Dia') return revenueHistory.day || [];
     if (period === 'Semana') return revenueHistory.week || [];
     if (period === 'Mês') return revenueHistory.month || [];
     return [];
-  };
-
-  const chartData = getChartData();
+  }, [revenueHistory, period]);
 
   return (
     <GlassSurface intensity="subtle" className="h-[400px] w-full p-6 flex flex-col border border-white/5">
@@ -124,4 +122,4 @@ export const RevenueChart: React.FC<{ revenueHistory?: any }> = ({ revenueHistor
       </div>
     </GlassSurface>
   );
-};
+});
