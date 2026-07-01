@@ -150,11 +150,11 @@ export const EditProfileModal: React.FC<EditProfileModalProps> = ({ user, isOpen
 
 
 
-          <div className="flex justify-end gap-3 pt-4 border-t border-white/10">
-            <Button variant="secondary" type="button" onClick={onClose} disabled={isSubmitting}>
+          <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 pt-4 border-t border-white/10">
+            <Button variant="secondary" type="button" onClick={onClose} disabled={isSubmitting} className="w-full sm:w-auto">
               Cancelar
             </Button>
-            <Button variant="primary" type="submit" isLoading={isSubmitting}>
+            <Button variant="primary" type="submit" isLoading={isSubmitting} className="w-full sm:w-auto">
               Salvar Alterações
             </Button>
           </div>

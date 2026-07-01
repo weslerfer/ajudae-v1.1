@@ -51,12 +51,12 @@ export function AdminQueue<T extends { id: string }>({
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
         <div>
           <Typography variant="h4">{title}</Typography>
           <Typography variant="caption" color="secondary">{description}</Typography>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
           {batchActions && selectedIds.size > 0 && (
             <div className="animate-fade-in flex items-center gap-2">
               <span className="text-[10px] uppercase font-bold text-slate-400 mr-2">

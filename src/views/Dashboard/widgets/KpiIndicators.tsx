@@ -13,7 +13,7 @@ export const KpiIndicators: React.FC<KpiIndicatorsProps> = ({ stats }) => {
   const totalEarned = stats?.totalEarned ?? 0;
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
+    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 w-full">
       {/* Grupos Ativados */}
       <div className="group text-left rounded-2xl">
         <GlassSurface intensity="subtle" className="p-4 flex flex-col gap-3 h-full border-white/5 hover:border-emerald-500/30 transition-colors">

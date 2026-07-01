@@ -18,6 +18,7 @@ export interface NavbarProps extends React.HTMLAttributes<HTMLDivElement> {
   isAdminMode?: boolean;
   onToggleAdminMode?: (mode: boolean) => void;
   onLogout?: () => void;
+  onOpenMobileMenu?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -27,6 +28,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   isAdminMode,
   onToggleAdminMode,
   onLogout,
+  onOpenMobileMenu,
   className,
   ...props
 }) => {
@@ -69,23 +71,35 @@ export const Navbar: React.FC<NavbarProps> = ({
   return (
     <header
       className={cn(
-        'sticky top-0 z-40 flex h-20 w-full items-center justify-between bg-slate-950/80 px-8 backdrop-blur-xl border-b border-white/5 transition-all duration-300',
+        'sticky top-0 z-40 flex h-16 md:h-20 w-full items-center justify-between bg-slate-950/80 px-4 md:px-8 backdrop-blur-xl border-b border-white/5 transition-all duration-300',
         className
       )}
       {...props}
     >
-      <div className="flex items-center gap-6">
+      <div className="flex items-center gap-2 md:gap-6">
+        {onOpenMobileMenu && (
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={onOpenMobileMenu}
+            className="md:hidden text-slate-400 hover:text-white"
+          >
+            <Icon name="solar:hamburger-menu-linear" size="lg" />
+          </Button>
+        )}
         {breadcrumbs && breadcrumbs.length > 0 && (
-          <Breadcrumb items={breadcrumbs} />
+          <div className="hidden md:flex">
+            <Breadcrumb items={breadcrumbs} />
+          </div>
         )}
       </div>
 
-      <div className="flex items-center gap-6">
-        <div className="w-64 hidden md:block" onClick={() => setIsOpen(true)}>
+      <div className="flex items-center gap-4 md:gap-6">
+        <div className="hidden md:block w-64" onClick={() => setIsOpen(true)}>
            <Search shortcut="⌘K" placeholder="Pesquisar..." />
         </div>
         
-        <div className="flex items-center gap-3 border-l border-white/10 pl-6 relative">
+        <div className="flex items-center gap-2 md:gap-3 border-l border-white/10 pl-4 md:pl-6 relative">
           
           {/* Notifications Toggle */}
           <Button 

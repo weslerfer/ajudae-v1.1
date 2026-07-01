@@ -3,6 +3,7 @@ import { Sidebar } from './Sidebar';
 import { Navbar } from './Navbar';
 import { GlobalProgressBar } from './GlobalProgressBar';
 import { CommandPalette } from './CommandPalette';
+import { Drawer, DrawerContent } from './Drawer';
 import { UserProfile } from '../../types';
 
 interface AppShellProps {
@@ -25,6 +26,7 @@ export const AppShell: React.FC<AppShellProps> = ({
   onLogout,
 }) => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Mapped standard items with proper solar icons
   const navItems = [
@@ -49,32 +51,56 @@ export const AppShell: React.FC<AppShellProps> = ({
 
   const displayItems = isAdminMode ? adminItems : navItems;
 
+  const handleNavigate = (id: string) => {
+    onNavigate(id);
+    setMobileMenuOpen(false);
+  };
+
   return (
     <div className="flex h-screen w-full bg-slate-950 overflow-hidden text-slate-200 font-sans">
       <GlobalProgressBar />
       <CommandPalette />
       
-      <Sidebar 
-        items={displayItems}
-        activeId={activeView} 
-        onItemClick={onNavigate} 
-        isCollapsed={sidebarCollapsed}
-        onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
-      />
+      {/* Desktop Sidebar */}
+      <div className="hidden md:flex h-full z-30">
+        <Sidebar 
+          items={displayItems}
+          activeId={activeView} 
+          onItemClick={handleNavigate} 
+          isCollapsed={sidebarCollapsed}
+          onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
+          className="h-full"
+        />
+      </div>
+
+      {/* Mobile Sidebar (Drawer) */}
+      <Drawer open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+        <DrawerContent side="left" className="w-80 p-0 border-r border-white/10 flex flex-col">
+          <Sidebar 
+            items={displayItems}
+            activeId={activeView} 
+            onItemClick={handleNavigate} 
+            isCollapsed={false}
+            onToggleCollapse={() => {}} 
+            className="w-full h-full border-none"
+          />
+        </DrawerContent>
+      </Drawer>
       
-      <div className="flex-1 flex flex-col min-w-0 relative h-full">
+      <div className="flex-1 flex flex-col min-w-0 relative h-full w-full">
         <Navbar 
           user={user}
           isAdminMode={isAdminMode}
           onToggleAdminMode={onToggleAdminMode}
           onLogout={onLogout}
+          onOpenMobileMenu={() => setMobileMenuOpen(true)}
         />
         
         <main className="flex-1 overflow-x-hidden overflow-y-auto bg-[url('/noise.png')] bg-repeat relative custom-scrollbar">
           {/* Subtle global gradient background */}
           <div className="fixed top-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-emerald-500/5 blur-[150px] pointer-events-none mix-blend-screen" />
           
-          <div className="max-w-7xl mx-auto px-4 md:px-8 pb-4 md:pb-8 pt-2 min-h-full">
+          <div className="max-w-7xl mx-auto px-4 md:px-8 pb-[max(1rem,env(safe-area-inset-bottom))] md:pb-8 pt-2 min-h-full">
             {children}
           </div>
         </main>

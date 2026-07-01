@@ -40,7 +40,12 @@ export default function AdminCarteiras({ user }: any) {
     try {
       setLoading(true);
       const res = await api.getAdminWallets();
-      const mappedWallets = (res.wallets || []).map((w: any) => ({ ...w, id: w.user_id }));
+      const mappedWallets = (res.wallets || []).map((w: any) => ({ 
+        ...w, 
+        id: w.user_id,
+        user: { nome_completo: w.nome_completo, email: w.email },
+        saldo: Number(w.saldo_atual || 0)
+      }));
       setWallets(mappedWallets);
       setTransactions(res.transactions || []);
     } catch (err: any) {

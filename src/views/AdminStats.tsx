@@ -61,7 +61,7 @@ export default function AdminStats({ onNavigate }: AdminStatsProps) {
   return (
     <div className="space-y-8 animate-fade-in pb-12">
       {/* Admin Title Bar */}
-      <div className="flex justify-between items-center bg-rose-500/5 px-6 py-4 border border-rose-500/10 rounded-2xl mb-8">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-rose-500/5 px-6 py-4 border border-rose-500/10 rounded-2xl mb-8">
         <div className="flex items-center gap-4">
           <div className="p-3 bg-rose-500/10 rounded-xl">
             <Server className="w-6 h-6 text-rose-400" />

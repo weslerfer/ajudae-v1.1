@@ -92,11 +92,11 @@ export default function Perfil({ user, onUserUpdate }: PerfilProps) {
           <div className="col-span-1 md:col-span-2 space-y-8">
             
             {/* Identity Card */}
-            <Surface className="p-8 relative overflow-hidden bg-slate-900 border-slate-800 flex items-center gap-6">
+            <Surface className="p-5 sm:p-8 relative overflow-hidden bg-slate-900 border-slate-800 flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-4 sm:gap-6">
               <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 rounded-full blur-3xl pointer-events-none" />
               
-              <div className="w-24 h-24 rounded-full bg-slate-800 flex items-center justify-center border border-white/10 shrink-0 shadow-xl z-10 relative">
-                <UserCircle2 className="w-12 h-12 text-slate-500" />
+              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-slate-800 flex items-center justify-center border border-white/10 shrink-0 shadow-xl z-10 relative">
+                <UserCircle2 className="w-10 h-10 sm:w-12 sm:h-12 text-slate-500" />
                 {health.score > 50 && (
                   <div className="absolute bottom-0 right-0 bg-emerald-500 text-slate-900 p-1 rounded-full border-2 border-slate-900">
                     <BadgeCheck className="w-4 h-4" />
@@ -104,7 +104,7 @@ export default function Perfil({ user, onUserUpdate }: PerfilProps) {
                 )}
               </div>
               
-              <div className="z-10 flex-1">
+              <div className="z-10 flex-1 flex flex-col items-center sm:items-start">
                 <div className="flex items-center gap-3 mb-1">
                   <Typography variant="h3" className="truncate">{user.nome_completo}</Typography>
                 </div>

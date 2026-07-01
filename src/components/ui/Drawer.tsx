@@ -40,7 +40,7 @@ export const DrawerContent = React.forwardRef<
       <DialogPrimitive.Content
         ref={ref}
         className={cn(
-          'fixed z-50 gap-4 bg-slate-900/95 backdrop-blur-2xl p-6 shadow-[0_0_60px_rgba(0,0,0,0.7)] border-white/10 transition ease-in-out data-[state=closed]:duration-200 data-[state=open]:duration-300',
+          'fixed z-50 gap-4 bg-slate-900/95 backdrop-blur-2xl p-6 pb-8 sm:pb-6 shadow-[0_0_60px_rgba(0,0,0,0.7)] border-white/10 transition ease-in-out data-[state=closed]:duration-200 data-[state=open]:duration-300',
           sideVariants[side],
           className
         )}

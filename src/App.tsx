@@ -16,6 +16,8 @@ import { GlobalProgressBar } from './components/ui/GlobalProgressBar';
 
 // Views - Lazy Loaded
 import { AuthScreen } from './views/Auth/AuthScreen';
+import { ErrorBoundary } from './components/ui/ErrorBoundary';
+const NotFound = React.lazy(() => import('./views/NotFound'));
 const Home = React.lazy(() => import('./views/Home'));
 const MeusGrupos = React.lazy(() => import('./views/MeusGrupos'));
 const GruposDisponiveis = React.lazy(() => import('./views/GruposDisponiveis'));
@@ -160,29 +162,33 @@ export default function App() {
 
         case 'perfil': return <Perfil user={user} onUserUpdate={(u) => { setUser(u); localStorage.setItem('ajudae_user_profile', JSON.stringify(u)); }} />;
         case 'configuracoes': return <Configuracoes user={user} onUserUpdate={setUser} />;
-        default: return <Dashboard onNavigate={setCurrentView} />;
+        default: return <NotFound onNavigate={setCurrentView} />;
       }
     }
   };
 
   // --- MAIN PLATFORM RENDERING WRAPPER (AUTHENTICATED) ---
   return (
-    <ExperienceProvider>
-      <Toaster />
-      <GlobalPopupManager />
-      
-      <AppShell
-        activeView={currentView}
-        onNavigate={setCurrentView}
-        user={user}
-        isAdminMode={isAdminMode}
-        onToggleAdminMode={handleToggleAdminMode}
-        onLogout={handleLogout}
-      >
-        <Suspense fallback={<div className="h-full w-full flex items-center justify-center p-8"><GlobalProgressBar /></div>}>
-          {renderView()}
-        </Suspense>
-      </AppShell>
-    </ExperienceProvider>
+    <ErrorBoundary>
+      <ExperienceProvider>
+        <Toaster />
+        <GlobalPopupManager />
+        
+        <AppShell
+          activeView={currentView}
+          onNavigate={setCurrentView}
+          user={user}
+          isAdminMode={isAdminMode}
+          onToggleAdminMode={handleToggleAdminMode}
+          onLogout={handleLogout}
+        >
+          <ErrorBoundary>
+            <Suspense fallback={<div className="h-full w-full flex items-center justify-center p-8"><GlobalProgressBar /></div>}>
+              {renderView()}
+            </Suspense>
+          </ErrorBoundary>
+        </AppShell>
+      </ExperienceProvider>
+    </ErrorBoundary>
   );
 }

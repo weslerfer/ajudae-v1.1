@@ -27,7 +27,7 @@ export const RevenueChart: React.FC<{ revenueHistory?: any }> = ({ revenueHistor
 
   return (
     <GlassSurface intensity="subtle" className="h-[400px] w-full p-6 flex flex-col border border-white/5">
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
         <div>
           <Typography variant="h4">Receita Hoje</Typography>
           <Typography variant="body" color="muted">
@@ -36,7 +36,7 @@ export const RevenueChart: React.FC<{ revenueHistory?: any }> = ({ revenueHistor
              'Evolução nos últimos 30 dias'}
           </Typography>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2 w-full sm:w-auto">
           {(['Dia', 'Semana', 'Mês'] as Timeframe[]).map((tf) => (
             <button 
               key={tf} 

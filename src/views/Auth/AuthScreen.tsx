@@ -304,7 +304,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onAuthSuccess, inviteCod
                     <div>
                       <Input icon={<Mail />} type="email" placeholder="E-mail" value={email} onChange={(e) => setEmail(e.target.value)} required />
                     </div>
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <Input icon={<Lock />} type="password" placeholder="Senha" value={password} onChange={(e) => setPassword(e.target.value)} required />
                       <Input icon={<Lock />} type="password" placeholder="Repetir Senha" value={regConfirmPassword} onChange={(e) => setRegConfirmPassword(e.target.value)} required />
                     </div>
@@ -319,11 +319,11 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onAuthSuccess, inviteCod
                     <div>
                       <Input icon={<User />} placeholder="Nome Completo" value={regNome} onChange={(e) => setRegNome(e.target.value)} required />
                     </div>
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <Input icon={<User />} placeholder="CPF" value={regCpf} onChange={(e) => setRegCpf(e.target.value)} required />
                       <Input icon={<Phone />} type="tel" placeholder="Telefone" value={regTelefone} onChange={(e) => setRegTelefone(e.target.value)} required />
                     </div>
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <Input icon={<Building2 />} placeholder="Cidade" value={regCidade} onChange={(e) => setRegCidade(e.target.value)} required />
                       <Input icon={<MapPin />} placeholder="Estado (UF)" value={regEstado} onChange={(e) => setRegEstado(e.target.value)} maxLength={2} required />
                     </div>

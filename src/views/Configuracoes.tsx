@@ -221,9 +221,9 @@ export default function Configuracoes({ user, onUserUpdate }: ConfiguracoesProps
                 <div className="space-y-6">
                   <div>
                     <Typography variant="caption" className="font-bold block mb-3 uppercase tracking-wider text-slate-400">Tema do Sistema</Typography>
-                    <div className="flex gap-3">
-                      <Button variant="secondary" className="flex-1 bg-slate-900 border-emerald-500/50 ring-1 ring-emerald-500/20">Modo Escuro (Ativo)</Button>
-                      <Button variant="secondary" className="flex-1 opacity-50 cursor-not-allowed">Modo Claro (Em Breve)</Button>
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <Button variant="secondary" className="w-full sm:flex-1 bg-slate-900 border-emerald-500/50 ring-1 ring-emerald-500/20">Modo Escuro (Ativo)</Button>
+                      <Button variant="secondary" className="w-full sm:flex-1 opacity-50 cursor-not-allowed">Modo Claro (Em Breve)</Button>
                     </div>
                   </div>
                   <div>
@@ -317,9 +317,9 @@ export default function Configuracoes({ user, onUserUpdate }: ConfiguracoesProps
                   </Typography>
                 </div>
 
-                <div className="flex gap-3 pt-2">
-                  <Button variant="secondary" className="flex-1" onClick={() => setIsPixModalOpen(false)}>Fechar</Button>
-                  <Button variant="primary" className="flex-1" onClick={() => setPixStep('edit')}>Editar Destino</Button>
+                <div className="flex flex-col-reverse sm:flex-row gap-3 pt-2">
+                  <Button variant="secondary" className="w-full sm:flex-1" onClick={() => setIsPixModalOpen(false)}>Fechar</Button>
+                  <Button variant="primary" className="w-full sm:flex-1" onClick={() => setPixStep('edit')}>Editar Destino</Button>
                 </div>
               </div>
             )}
@@ -346,9 +346,9 @@ export default function Configuracoes({ user, onUserUpdate }: ConfiguracoesProps
                   </div>
                 </div>
 
-                <div className="flex gap-3 pt-4 border-t border-white/5">
-                  <Button variant="secondary" className="flex-1" onClick={() => setPixStep('view')}>Cancelar</Button>
-                  <Button variant="primary" className="flex-1" onClick={() => {
+                <div className="flex flex-col-reverse sm:flex-row gap-3 pt-4 border-t border-white/5">
+                  <Button variant="secondary" className="w-full sm:flex-1" onClick={() => setPixStep('view')}>Cancelar</Button>
+                  <Button variant="primary" className="w-full sm:flex-1" onClick={() => {
                     if (!draftChavePix.trim() || !draftBancoPix.trim()) {
                       toast({ title: 'Atenção', description: 'Preencha a chave Pix e a instituição bancária.', variant: 'warning' });
                       return;
@@ -372,9 +372,9 @@ export default function Configuracoes({ user, onUserUpdate }: ConfiguracoesProps
                   </Typography>
                 </div>
 
-                <div className="flex gap-3 pt-2">
-                  <Button variant="secondary" className="flex-1" onClick={() => setPixStep('edit')}>Voltar e Editar</Button>
-                  <Button variant="primary" className="flex-[2] bg-indigo-600 hover:bg-indigo-500 text-white" onClick={handleSavePix}>
+                <div className="flex flex-col-reverse sm:flex-row gap-3 pt-2">
+                  <Button variant="secondary" className="w-full sm:flex-1" onClick={() => setPixStep('edit')}>Voltar e Editar</Button>
+                  <Button variant="primary" className="w-full sm:flex-[2] bg-indigo-600 hover:bg-indigo-500 text-white" onClick={handleSavePix}>
                     Confirmar e Aplicar
                   </Button>
                 </div>

@@ -39,7 +39,7 @@ export const HeroWidget: React.FC<HeroWidgetProps> = ({ balance, lastUpdated, tr
           <Typography variant="h3" color="secondary" className="font-mono opacity-50">R$</Typography>
           <Typography 
             as="h1" 
-            className="text-6xl sm:text-7xl lg:text-[5.5rem] font-display font-bold tracking-tighter text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.15)] leading-none"
+            className="text-5xl sm:text-6xl lg:text-7xl xl:text-[5.5rem] font-display font-bold tracking-tighter text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.15)] leading-none"
           >
             <CountUp 
               value={balance} 
