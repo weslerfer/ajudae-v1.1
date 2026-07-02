@@ -61,14 +61,9 @@ export const GroupDetailsModal: React.FC<GroupDetailsModalProps> = ({
             </div>
 
             <div className="space-y-1.5 sm:space-y-2">
-              <div className="flex items-center justify-between">
-                <Typography variant="caption" color="secondary" className="font-mono text-[10px] sm:text-xs uppercase tracking-wider block text-slate-400 font-bold">
-                  Ocupação do Grupo
-                </Typography>
-                <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 font-bold">
-                  {group.members?.length || 0}/4 Vagas
-                </span>
-              </div>
+              <Typography variant="caption" color="secondary" className="font-mono text-[10px] sm:text-xs uppercase tracking-wider block text-slate-400 font-bold">
+                Participantes do Grupo
+              </Typography>
               <div className="bg-slate-900/80 border border-white/5 p-2 sm:p-3 rounded-xl space-y-1.5 sm:space-y-2 max-h-[280px] sm:max-h-[340px] overflow-y-auto custom-scrollbar">
                 {group.members && group.members.length > 0 ? (
                   group.members.map((member: any) => (
