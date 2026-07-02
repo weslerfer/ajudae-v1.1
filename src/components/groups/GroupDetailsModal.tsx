@@ -34,48 +34,53 @@ export const GroupDetailsModal: React.FC<GroupDetailsModalProps> = ({
     <Modal open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <ModalContent className="max-w-md">
         {!payment ? (
-          <div className="flex flex-col space-y-4 sm:space-y-5 pt-1 sm:pt-0">
+          <div className="flex flex-col space-y-3 sm:space-y-4 pt-1 sm:pt-0">
             <ModalHeader className="pr-10">
               <ModalTitle className="text-xl sm:text-2xl font-bold text-white tracking-tight leading-tight">
                 {group.nome_grupo}
               </ModalTitle>
             </ModalHeader>
 
-            <div className="grid grid-cols-2 gap-2.5 sm:gap-3 bg-slate-950/80 p-3 sm:p-4 rounded-xl border border-emerald-500/20 shadow-inner">
-              <div className="bg-slate-900/60 p-3 sm:p-3.5 rounded-lg border border-white/5">
-                <Typography variant="caption" color="secondary" className="font-mono text-[10px] sm:text-xs uppercase mb-1 block">
+            <div className="grid grid-cols-2 gap-2 sm:gap-3">
+              <div className="bg-slate-950/90 p-2.5 sm:p-3.5 rounded-xl border border-emerald-500/20 shadow-inner">
+                <Typography variant="caption" color="secondary" className="font-mono text-[10px] sm:text-xs uppercase mb-0.5 block text-slate-400">
                   Custo de Ativação
                 </Typography>
-                <Typography variant="h4" className="text-emerald-400 text-lg sm:text-xl font-bold font-mono">
+                <Typography variant="h4" className="text-emerald-400 text-base sm:text-xl font-bold font-mono leading-tight">
                   R$ {group.valor_ativacao.toFixed(2)}
                 </Typography>
               </div>
-              <div className="bg-slate-900/60 p-3 sm:p-3.5 rounded-lg border border-white/5">
-                <Typography variant="caption" color="secondary" className="font-mono text-[10px] sm:text-xs uppercase mb-1 block">
+              <div className="bg-slate-950/90 p-2.5 sm:p-3.5 rounded-xl border border-white/10 shadow-inner">
+                <Typography variant="caption" color="secondary" className="font-mono text-[10px] sm:text-xs uppercase mb-0.5 block text-slate-400">
                   Valor Base
                 </Typography>
-                <Typography variant="h4" className="text-white text-lg sm:text-xl font-bold font-mono">
+                <Typography variant="h4" className="text-white text-base sm:text-xl font-bold font-mono leading-tight">
                   R$ {group.valor_base.toFixed(2)}
                 </Typography>
               </div>
             </div>
 
-            <div className="space-y-2 sm:space-y-2.5">
-              <Typography variant="caption" color="secondary" className="font-mono text-xs uppercase tracking-wider block">
-                Ocupação do Grupo
-              </Typography>
-              <div className="bg-slate-900/80 border border-white/5 p-3 sm:p-3.5 rounded-xl space-y-2 max-h-[160px] sm:max-h-[220px] overflow-y-auto custom-scrollbar pr-1">
+            <div className="space-y-1.5 sm:space-y-2">
+              <div className="flex items-center justify-between">
+                <Typography variant="caption" color="secondary" className="font-mono text-[10px] sm:text-xs uppercase tracking-wider block text-slate-400 font-bold">
+                  Ocupação do Grupo
+                </Typography>
+                <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 font-bold">
+                  {group.members?.length || 0}/4 Vagas
+                </span>
+              </div>
+              <div className="bg-slate-900/80 border border-white/5 p-2 sm:p-3 rounded-xl space-y-1.5 sm:space-y-2 max-h-[280px] sm:max-h-[340px] overflow-y-auto custom-scrollbar">
                 {group.members && group.members.length > 0 ? (
                   group.members.map((member: any) => (
-                    <div key={member.id} className="flex items-center gap-3 bg-slate-950/90 p-2 sm:p-2.5 rounded-lg border border-white/5">
-                      <span className="w-6 h-6 flex items-center justify-center bg-slate-900 rounded font-mono text-xs text-slate-400 border border-white/5 shrink-0">
+                    <div key={member.id} className="flex items-center gap-2.5 sm:gap-3 bg-slate-950/90 py-1.5 px-2.5 sm:p-2.5 rounded-lg border border-white/5">
+                      <span className="w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center bg-slate-900 rounded font-mono text-[11px] sm:text-xs text-slate-400 border border-white/5 shrink-0 font-bold">
                         #{member.position}
                       </span>
-                      <div className="flex-1 min-w-0">
+                      <div className="flex-1 min-w-0 leading-tight">
                         <Typography variant="caption" className="font-bold truncate block text-slate-200 text-xs sm:text-sm">
                           {member.nome_completo}
                         </Typography>
-                        <Typography variant="caption" color="secondary" className="truncate text-[10px] sm:text-xs text-slate-400">
+                        <Typography variant="caption" color="secondary" className="truncate text-[10px] sm:text-xs text-slate-400 block mt-0.5">
                           {member.cidade}/{member.estado}
                         </Typography>
                       </div>
