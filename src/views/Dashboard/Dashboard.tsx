@@ -114,7 +114,7 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
                 {/* ROW 3: Timeline & Utilities */}
                 <div className="grid grid-cols-1 gap-8 lg:gap-12">
                   <motion.div variants={fadeUp} className="w-full order-5">
-                    <GlassSurface intensity="subtle" className="p-6 h-full min-h-[400px]">
+                    <GlassSurface intensity="subtle" className="p-4 sm:p-6 h-full min-h-[400px]">
                       <ActivityFeed activities={stats?.recentActivities || []} onNavigate={onNavigate} />
                     </GlassSurface>
                   </motion.div>

@@ -48,9 +48,9 @@ export const DrawerContent = React.forwardRef<
       >
         <div className="absolute inset-0 z-[-1] bg-gradient-to-l from-white/5 to-transparent pointer-events-none" />
         {children}
-        <DialogPrimitive.Close className="absolute right-4 top-4 rounded-full p-2 opacity-70 ring-offset-slate-950 transition-opacity hover:opacity-100 hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-white/10">
-          <Icon name="solar:close-circle-bold" className="h-5 w-5" />
-          <span className="sr-only">Close</span>
+        <DialogPrimitive.Close className="absolute right-4 top-4 sm:right-5 sm:top-5 z-50 flex h-8 w-8 items-center justify-center rounded-full text-slate-400 hover:text-white hover:bg-white/10 transition-all focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 ring-offset-slate-950 disabled:pointer-events-none">
+          <Icon name="solar:close-circle-bold" className="h-6 w-6" />
+          <span className="sr-only">Fechar</span>
         </DialogPrimitive.Close>
       </DialogPrimitive.Content>
     </DrawerPortal>

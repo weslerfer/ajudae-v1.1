@@ -35,7 +35,7 @@ export const ModalContent = React.forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        'fixed left-[50%] top-[50%] z-50 grid w-[calc(100vw-2rem)] sm:w-full max-w-lg max-h-[calc(100dvh-4rem)] md:max-h-[calc(100vh-4rem)] overflow-y-auto translate-x-[-50%] translate-y-[-50%] gap-4 border border-white/10 bg-slate-900/95 lg:bg-slate-900/90 p-4 sm:p-6 shadow-2xl lg:shadow-[0_30px_60px_rgba(0,0,0,0.6)] lg:backdrop-blur-2xl duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] rounded-2xl sm:rounded-3xl custom-scrollbar',
+        'fixed left-[50%] top-[50%] z-50 grid w-[calc(100vw-1.5rem)] sm:w-full max-w-lg max-h-[calc(100dvh-2rem)] sm:max-h-[calc(100dvh-4rem)] md:max-h-[calc(100vh-4rem)] overflow-y-auto translate-x-[-50%] translate-y-[-50%] gap-4 border border-white/10 bg-slate-900/95 lg:bg-slate-900/90 p-4 sm:p-6 shadow-2xl lg:shadow-[0_30px_60px_rgba(0,0,0,0.6)] lg:backdrop-blur-2xl duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] rounded-2xl sm:rounded-3xl custom-scrollbar',
         className
       )}
       {...props}
@@ -43,9 +43,9 @@ export const ModalContent = React.forwardRef<
       {/* Decorative inner glow for OS feel */}
       <div className="absolute inset-0 z-[-1] rounded-3xl bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
       {children}
-      <DialogPrimitive.Close className="absolute right-4 top-4 rounded-full p-2 opacity-70 ring-offset-slate-950 transition-opacity hover:opacity-100 hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-white/10">
-        <Icon name="solar:close-circle-bold" className="h-5 w-5" />
-        <span className="sr-only">Close</span>
+      <DialogPrimitive.Close className="absolute right-4 top-4 sm:right-5 sm:top-5 z-50 flex h-8 w-8 items-center justify-center rounded-full text-slate-400 hover:text-white hover:bg-white/10 transition-all focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 ring-offset-slate-950 disabled:pointer-events-none">
+        <Icon name="solar:close-circle-bold" className="h-6 w-6" />
+        <span className="sr-only">Fechar</span>
       </DialogPrimitive.Close>
     </DialogPrimitive.Content>
   </ModalPortal>

@@ -89,7 +89,7 @@ export function PixCheckout({ paymentData, onSuccess, onCancel }: PixCheckoutPro
   return (
     <div className="w-full flex flex-col items-center justify-center">
       {/* Payment Lifecycle Header */}
-      <div className="w-full max-w-sm flex items-center justify-between mb-3">
+      <div className="w-full max-w-[310px] sm:max-w-sm flex items-center justify-between mb-4 pt-5 sm:pt-4 px-2 sm:px-4">
         <Step active={true} completed={true} label="Gerado" />
         <Line active={true} />
         <Step active={status === 'aguardando' || status === 'processando' || status === 'confirmado'} completed={status === 'processando' || status === 'confirmado'} label="Leitura" />
@@ -100,25 +100,25 @@ export function PixCheckout({ paymentData, onSuccess, onCancel }: PixCheckoutPro
       </div>
 
       <div className="text-center space-y-1 mb-3">
-        <Typography variant="h3" className="font-mono text-emerald-400 text-4xl font-bold tracking-tighter">
+        <Typography variant="h3" className="font-mono text-emerald-400 text-3xl sm:text-4xl font-bold tracking-tighter">
           R$ {paymentData.valor.toFixed(2)}
         </Typography>
-        <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/5 font-bold text-sm ${currentConfig.color} bg-slate-900 shadow-xl`}>
+        <div className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-white/5 font-bold text-xs sm:text-sm ${currentConfig.color} bg-slate-900 shadow-xl`}>
           {currentConfig.icon}
           {currentConfig.label}
         </div>
       </div>
 
       {/* QR Code Protagonism */}
-      <div className="relative mb-3">
+      <div className="relative mb-3 sm:mb-4">
         {/* Animated Glow depending on status */}
         <div className={`absolute -inset-4 rounded-3xl blur-2xl opacity-50 transition-colors duration-1000 ${currentConfig.glowColor}`} />
         
-        <div className="relative bg-white p-4 rounded-3xl shadow-2xl border border-white/20">
+        <div className="relative bg-white p-3.5 sm:p-4 rounded-3xl shadow-2xl border border-white/20">
           <img 
             src={paymentData.qrcode.startsWith('data:') || paymentData.qrcode.startsWith('http') ? paymentData.qrcode : `data:image/png;base64,${paymentData.qrcode}`} 
             alt="QR Code Pix" 
-            className={`w-48 h-48 md:w-56 md:h-56 transition-opacity duration-300 ${status === 'expirado' || status === 'cancelado' ? 'opacity-20 grayscale' : 'opacity-100'}`}
+            className={`w-44 h-44 sm:w-56 sm:h-56 transition-opacity duration-300 ${status === 'expirado' || status === 'cancelado' ? 'opacity-20 grayscale' : 'opacity-100'}`}
             referrerPolicy="no-referrer"
           />
           
@@ -142,9 +142,9 @@ export function PixCheckout({ paymentData, onSuccess, onCancel }: PixCheckoutPro
       </div>
 
       {/* Actions */}
-      <div className="w-full max-w-sm space-y-4">
+      <div className="w-full max-w-sm space-y-2.5 sm:space-y-4">
         {(status === 'aguardando' || status === 'processando') && (
-          <div className="flex items-center justify-between text-xs text-slate-400 font-mono mb-2">
+          <div className="flex items-center justify-between text-xs text-slate-400 font-mono mb-1">
             <span>Validade do QR Code:</span>
             <span className={timeLeft < 60 ? 'text-red-400 font-bold' : 'text-slate-300'}>{formattedTime}</span>
           </div>
@@ -152,24 +152,24 @@ export function PixCheckout({ paymentData, onSuccess, onCancel }: PixCheckoutPro
 
         <Button 
           variant="primary" 
-          className="w-full h-14 text-sm font-bold shadow-xl"
+          className="w-full h-12 sm:h-14 text-xs sm:text-sm font-bold shadow-xl shrink-0"
           onClick={handleCopy}
           disabled={status !== 'aguardando' && status !== 'processando'}
         >
           {copied ? (
             <>
-              <Check className="w-5 h-5 mr-2" /> Copiado!
+              <Check className="w-4 h-4 sm:w-5 sm:h-5 mr-2" /> Copiado!
             </>
           ) : (
             <>
-              <Copy className="w-5 h-5 mr-2" /> Copiar Código Pix
+              <Copy className="w-4 h-4 sm:w-5 sm:h-5 mr-2" /> Copiar Código Pix
             </>
           )}
         </Button>
 
         <Button 
           variant="secondary" 
-          className="w-full h-14"
+          className="w-full h-12 sm:h-14 text-xs sm:text-sm shrink-0"
           onClick={onCancel}
         >
           {status === 'confirmado' ? 'Concluir e Voltar' : 'Cancelar Pagamento'}

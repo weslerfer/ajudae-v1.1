@@ -40,11 +40,11 @@ export const ActivityFeed: React.FC<ActivityFeedProps> = ({ activities = [], onN
         ) : activities.map((act) => (
           <div 
             key={act.id} 
-            className="group flex items-center justify-between rounded-2xl p-4 transition-colors hover:bg-white/5 border border-transparent hover:border-white/5"
+            className="group flex flex-col sm:flex-row sm:items-center justify-between rounded-2xl p-3.5 sm:p-4 transition-colors hover:bg-white/5 border border-white/5 sm:border-transparent sm:hover:border-white/5 bg-slate-900/40 sm:bg-transparent gap-3"
           >
-            <div className="flex items-center gap-4">
+            <div className="flex items-start gap-3 sm:gap-4 min-w-0 flex-1">
               <div className={cn(
-                "flex h-10 w-10 shrink-0 items-center justify-center rounded-full",
+                "flex h-10 w-10 shrink-0 items-center justify-center rounded-full mt-0.5 sm:mt-0",
                 act.type === 'income' ? "bg-emerald-500/10 text-emerald-400" : "bg-red-500/10 text-red-400"
               )}>
                 <Icon 
@@ -52,23 +52,43 @@ export const ActivityFeed: React.FC<ActivityFeedProps> = ({ activities = [], onN
                   className="h-5 w-5" 
                 />
               </div>
-              <div className="flex flex-col">
-                <Typography variant="body" className="font-semibold text-slate-200">
-                  {act.title}
+              
+              <div className="flex flex-col min-w-0 flex-1 gap-1">
+                <div className="flex items-center justify-between gap-2 sm:justify-start">
+                  <Typography variant="body" className="font-semibold text-slate-200 truncate">
+                    {act.title}
+                  </Typography>
+                  {/* On mobile, show amount next to title */}
+                  <Typography variant="body" className={cn(
+                    "font-mono font-semibold sm:hidden shrink-0 text-sm",
+                    act.amount > 0 ? "text-emerald-400" : "text-slate-300"
+                  )}>
+                    {act.amount > 0 ? '+' : ''}R$ {Math.abs(act.amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                  </Typography>
+                </div>
+
+                <Typography variant="caption" color="muted" className="text-slate-400 break-words leading-relaxed text-xs sm:text-sm">
+                  {act.description || 'Movimentação'}
                 </Typography>
-                <div className="flex items-center gap-2">
-                  <Typography variant="caption" color="muted">
-                    {act.description || 'Movimentação'}
-                  </Typography>
-                  <span className="h-1 w-1 rounded-full bg-slate-700" />
-                  <Typography variant="caption" color="muted">
+
+                <div className="flex items-center justify-between sm:justify-start gap-2 pt-1 sm:pt-0 text-[11px] text-slate-500 font-mono">
+                  <span>
                     {new Date(act.date).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
-                  </Typography>
+                  </span>
+                  <span className="hidden sm:inline h-1 w-1 rounded-full bg-slate-700" />
+                  {/* On mobile, show status next to date */}
+                  <span className={cn(
+                    "sm:hidden uppercase tracking-wider font-bold text-[10px]",
+                    act.status === 'pendente' ? "text-amber-500/90" : "text-emerald-500/90"
+                  )}>
+                    {act.status === 'pendente' ? 'Pendente' : 'Concluído'}
+                  </span>
                 </div>
               </div>
             </div>
 
-            <div className="flex flex-col items-end">
+            {/* On desktop (sm and up), show amount and status on the right column */}
+            <div className="hidden sm:flex flex-col items-end shrink-0 ml-4">
               <Typography variant="body" className={cn(
                 "font-mono font-semibold",
                 act.amount > 0 ? "text-emerald-400" : "text-slate-300"
