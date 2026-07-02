@@ -135,21 +135,21 @@ export default function Configuracoes({ user, onUserUpdate }: ConfiguracoesProps
                   </div>
                 </div>
 
-                <div className="bg-slate-950 p-4 rounded-xl border border-white/5 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <QrCode className="w-6 h-6 text-slate-500" />
-                    <div>
-                      <Typography variant="body" className="font-mono font-bold text-white">
+                <div className="bg-slate-950 p-4 rounded-xl border border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
+                    <QrCode className="w-6 h-6 text-slate-500 shrink-0" />
+                    <div className="min-w-0 flex-1">
+                      <Typography variant="body" className="font-mono font-bold text-white break-all">
                         {user.chave_pix ? user.chave_pix : 'Nenhuma chave cadastrada'}
                       </Typography>
                       {user.banco_pix && (
-                        <Typography variant="caption" color="secondary" className="uppercase font-mono text-[10px]">
+                        <Typography variant="caption" color="secondary" className="uppercase font-mono text-[10px] block mt-0.5 truncate">
                           Instituição: {user.banco_pix}
                         </Typography>
                       )}
                     </div>
                   </div>
-                  <Button variant="secondary" size="sm" onClick={() => {
+                  <Button variant="secondary" size="sm" className="w-full sm:w-auto shrink-0" onClick={() => {
                     setDraftChavePix(user.chave_pix || '');
                     setDraftBancoPix(user.banco_pix || '');
                     setPixStep('view');

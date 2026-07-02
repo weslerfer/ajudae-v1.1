@@ -99,7 +99,7 @@ export const ActivityTimeline: React.FC<ActivityTimelineProps> = ({
               const statusProps = statusConfig[event.status];
               
               return (
-                <div key={event.id} className="group relative flex gap-6">
+                <div key={event.id} className="group relative flex gap-3 sm:gap-6">
                   {/* Timeline Line & Icon */}
                   <div className="flex flex-col items-center">
                     <div className={cn(
@@ -117,31 +117,38 @@ export const ActivityTimeline: React.FC<ActivityTimelineProps> = ({
                   <GlassSurface 
                     intensity="subtle" 
                     className={cn(
-                      "flex-1 p-4 mb-6 transition-all duration-300 hover:bg-white/[0.03] border-l-2",
+                      "flex-1 min-w-0 p-3.5 sm:p-4 mb-6 transition-all duration-300 hover:bg-white/[0.03] border-l-2",
                       priorityConfig[event.priority]
                     )}
                   >
-                    <div className="flex justify-between items-start mb-2">
-                      <div className="flex flex-col">
-                        <Typography variant="body" className="font-semibold text-slate-200 group-hover:text-white transition-colors">
-                          {event.title}
-                        </Typography>
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">{event.origin}</span>
-                          <span className="h-1 w-1 rounded-full bg-slate-700" />
-                          <Typography variant="caption" color="muted">{event.timestamp}</Typography>
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1 sm:gap-4 mb-2">
+                      <div className="flex flex-col min-w-0 flex-1">
+                        <div className="flex items-center justify-between sm:justify-start gap-2">
+                          <Typography variant="body" className="font-semibold text-slate-200 group-hover:text-white transition-colors truncate">
+                            {event.title}
+                          </Typography>
+                          {event.amount !== undefined && (
+                            <Typography variant="body" className={cn("font-mono font-bold sm:hidden shrink-0 text-sm", event.amount > 0 ? "text-emerald-400" : "text-slate-300")}>
+                              {event.amount > 0 ? '+' : ''}R$ {Math.abs(event.amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                            </Typography>
+                          )}
+                        </div>
+                        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1 text-[11px] text-slate-500 font-mono">
+                          <span className="font-bold uppercase tracking-wider text-slate-400">{event.origin}</span>
+                          <span className="h-1 w-1 rounded-full bg-slate-700 shrink-0" />
+                          <span className="break-all">{event.timestamp.includes('T') ? new Date(event.timestamp).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' }) : event.timestamp}</span>
                         </div>
                       </div>
                       
                       {event.amount !== undefined && (
-                        <Typography variant="body" className={cn("font-mono font-bold", event.amount > 0 ? "text-emerald-400" : "text-slate-300")}>
+                        <Typography variant="body" className={cn("hidden sm:block font-mono font-bold shrink-0", event.amount > 0 ? "text-emerald-400" : "text-slate-300")}>
                           {event.amount > 0 ? '+' : ''}R$ {Math.abs(event.amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                         </Typography>
                       )}
                     </div>
                     
                     {event.description && (
-                      <Typography variant="caption" color="muted" className="mt-1 leading-relaxed">
+                      <Typography variant="caption" color="muted" className="mt-2 leading-relaxed text-slate-300 break-words block w-full text-xs sm:text-sm">
                         {event.description}
                       </Typography>
                     )}

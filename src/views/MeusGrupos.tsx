@@ -243,10 +243,10 @@ export default function MeusGrupos({ user }: MeusGruposProps) {
                       <Button 
                         variant="secondary"
                         onClick={handleCopyLink}
-                        className="px-6 h-[58px]"
+                        className="px-5 sm:px-6 h-[58px] shrink-0 flex items-center justify-center"
                         title="Copiar Link"
                       >
-                        {copied ? <Check className="w-5 h-5 text-emerald-400" /> : <Copy className="w-5 h-5" />}
+                        {copied ? <Check className="w-7 h-7 sm:w-8 sm:h-8 shrink-0 text-emerald-400" /> : <Copy className="w-7 h-7 sm:w-8 sm:h-8 shrink-0 text-slate-100" />}
                       </Button>
                     </div>
                   </div>
